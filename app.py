@@ -19,16 +19,16 @@ from io import BytesIO
 from sqlalchemy import and_
 
 app = Flask(__name__)
-app.secret_key = "mi_clave_secreta_super_segura"
 
+app.secret_key = os.environ.get("SECRET_KEY", "dev_key")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///produccion.db"
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(basedir, "produccion.db")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
-
-
-app.secret_key = "clave_secreta_segura_2025"
 
 with app.app_context():
     db.create_all()
